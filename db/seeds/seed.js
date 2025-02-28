@@ -105,12 +105,12 @@ function insertArticlesData(data) {
       articleWithDate.article_img_url
     ]
   })
-  const insertArticlesString = format(`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L;`, formattedArticles)
+  const insertArticlesString = format(`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;`, formattedArticles)
   return db.query(insertArticlesString)
 }
 
 function insertCommentsData(commentData, articleData) {
-  const articleLookup = createLookupObject(articleData, "article_name", "article_id")
+  const articleLookup = createLookupObject(articleData, "title", "article_id")
   const formattedComments = commentData.map((comment) => {
     const commentWithDate = convertTimestampToDate(comment)
     return [
