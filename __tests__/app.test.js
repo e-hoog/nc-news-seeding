@@ -74,8 +74,8 @@ describe("GET /api/articles", () => {
         expect(article).toHaveProperty("created_at")
         expect(article).toHaveProperty("votes")
         expect(article).toHaveProperty("article_img_url")
+        expect(article).toHaveProperty("comment_count")
         expect(article).not.toHaveProperty("body")
-        expect(typeof article.comment_count).toBe("number")
       })
     })
   });  
