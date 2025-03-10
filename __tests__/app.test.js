@@ -72,4 +72,12 @@ describe("GET /api/articles/:article_id", () => {
         expect(typeof article_img_url).toBe('string')
       })
   })
+  test("404: responds with an error message when passed an id not in the database", () => {
+    return request(app)
+      .get("/api/articles/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
 });
