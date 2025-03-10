@@ -80,4 +80,12 @@ describe("GET /api/articles/:article_id", () => {
         expect(body).toHaveProperty("msg", "Not Found");
       });
   });
+  test("400: responds with an error message if not passed a number", () => {
+    return request(app)
+      .get("/api/articles/notANumber")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
 });
