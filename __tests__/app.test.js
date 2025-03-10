@@ -17,7 +17,7 @@ afterAll(() => {
 })
 
 describe("ALL /notARoute", () => {
-  test("404: Responds with an error message if path given is not a route", () => {
+  test("404: Responds with an error message if path given is not a valid endpoint", () => {
     return request(app)
       .get("/api/treasure")
       .expect(404)
@@ -40,7 +40,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("200: Responds with an array containing data on all topics", () => {
+  test("200: Responds with an array containing correct data on all topics", () => {
     return request(app)
       .get('/api/topics')
       .expect(200)
@@ -54,3 +54,22 @@ describe("GET /api/topics", () => {
       })
   })
 })
+
+describe("GET /api/articles/:article_id", () => {
+  test('200: Responds with an object containing correct data on the article with given id', () => {
+    return request(app)
+      .get('/api/articles/3')
+      .expect(200)
+      .then(({ body: { article } }) => {
+        const { author, title, article_id, body, topic, created_at, votes, article_img_url } = article
+        expect(article_id).toBe(3)
+        expect(typeof author).toBe('string')
+        expect(typeof title).toBe('string')
+        expect(typeof body).toBe('string')
+        expect(typeof topic).toBe('string')
+        expect(typeof created_at).toBe('string')
+        expect(typeof votes).toBe('number')
+        expect(typeof article_img_url).toBe('string')
+      })
+  })
+});
