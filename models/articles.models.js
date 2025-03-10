@@ -8,7 +8,6 @@ exports.selectArticles = () => {
         GROUP BY articles.article_id
         ORDER BY articles.created_at DESC`)
     .then(({ rows }) => {
-        console.log(rows)
         return rows
     })
 }
