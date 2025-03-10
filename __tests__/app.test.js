@@ -39,18 +39,18 @@ describe("GET /api", () => {
   });
 });
 
-describe("GET /api/topics", () => { 
-  test("200: Responds with an array containing data on all topics",() => {
-      return request(app)
+describe("GET /api/topics", () => {
+  test("200: Responds with an array containing data on all topics", () => {
+    return request(app)
       .get('/api/topics')
       .expect(200)
-      .then(({ body : {topics} }) => {
-          topics.forEach((topic) => {
-              const {slug, description, img_url} = topic
-              expect(typeof slug).toBe('string')
-              expect(typeof description).toBe('string')
-              expect(typeof img_url).toBe('string')
-          })
+      .then(({ body: { topics } }) => {
+        expect(topics.length).toBeGreaterThan(0);
+        topics.forEach((topic) => {
+          const { slug, description } = topic
+          expect(typeof slug).toBe('string')
+          expect(typeof description).toBe('string')
+        })
       })
   })
 })
