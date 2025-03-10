@@ -16,7 +16,17 @@ afterAll(() => {
   return db.end()
 })
 
-
+describe("ALL /notARoute", () => {
+  test("404: Responds with an error message if path given is not a route", () => {
+    return request(app)
+      .get("/api/treasure")
+      .expect(404)
+      .then(({ body }) => {
+        //console.log(body);
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+});
 
 describe("GET /api", () => {
   test("200: Responds with an object detailing the documentation for each endpoint", () => {
@@ -30,7 +40,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => { 
-  test("200: Respond with an array containing data on all topics",() => {
+  test("200: Responds with an array containing data on all topics",() => {
       return request(app)
       .get('/api/topics')
       .expect(200)
