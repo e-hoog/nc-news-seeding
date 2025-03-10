@@ -1,7 +1,14 @@
 const {
   convertTimestampToDate,
-  createLookupObject
+  createLookupObject,
+  countCommentsById
 } = require("../db/seeds/utils");
+const db = require("../db/connection")
+
+afterAll(() => {
+  return db.end()
+})
+
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -120,3 +127,24 @@ describe('createLookupObject', () => {
     expect(result).toEqual({})
   });
 });
+
+describe('countCommentsById', () => {
+  test('returns 0 if given an article id with no comments', async () => {
+    const article_id = 2
+    const result = await countCommentsById(article_id)
+    const expected = 0
+    expect(result).toBe(expected)
+  });
+  test('returns correct count if given an article id with comments', async() => {
+    const article_id = 1
+    const result = await countCommentsById(article_id)
+    const expected = 11
+    expect(result).toBe(expected)
+  });
+  test('returns 0 if given an article id that does not exist in the database', async() => {
+    const article_id = 100000
+    const result = await countCommentsById(article_id)
+    const expected = 0
+    expect(result).toBe(expected)
+  });
+})
