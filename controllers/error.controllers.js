@@ -1,5 +1,4 @@
 exports.handlePsqlErrors = (err, req, res, next) => {
-    console.log(err);
     if (err.code === "22P02") {
       res.status(400).send({ msg: "Bad Request" });
     }
@@ -14,7 +13,6 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
   
 exports.handleServerErrors = (err, req, res, next) => {
-    console.log(err)
     res.status(500).send({ msg: "Unable to reach server" });
     next(err);
 };
