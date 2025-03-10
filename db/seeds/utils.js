@@ -16,7 +16,6 @@ exports.createLookupObject = (databaseRow = [], targetKey, targetValue) => {
 exports.countCommentsById = (article_id) => {
   return db.query(`SELECT * FROM comments WHERE article_id = $1`, [article_id])
   .then(({ rows }) => {
-    console.log(rows, "<<< rows")
     const commentCount = rows.length
     return commentCount
 })

@@ -4,6 +4,7 @@ const app = require("../app")
 const seed = require("../db/seeds/seed")
 const data = require("../db/data/test-data")
 const db = require("../db/connection")
+require("jest-sorted")
 /* Set up your test imports here */
 
 /* Set up your beforeEach & afterAll functions here */
@@ -55,6 +56,31 @@ describe("GET /api/topics", () => {
   })
 })
 
+describe("GET /api/articles", () => {
+  test('200: responds with an array containing correct data on all articles', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then(({ body : { articles } }) => {
+      expect(articles.length).toBeGreaterThan(0)
+      expect(articles).toBeSortedBy("created_at", {
+        descending: true
+      })
+      articles.forEach((article) => {
+        expect(article).toHaveProperty("article_id")
+        expect(article).toHaveProperty("title")
+        expect(article).toHaveProperty("topic")
+        expect(article).toHaveProperty("author")
+        expect(article).toHaveProperty("created_at")
+        expect(article).toHaveProperty("votes")
+        expect(article).toHaveProperty("article_img_url")
+        expect(article).not.toHaveProperty("body")
+        expect(typeof article.comment_count).toBe("number")
+      })
+    })
+  });  
+});
+
 describe("GET /api/articles/:article_id", () => {
   test('200: Responds with an object containing correct data on the article with given id', () => {
     return request(app)
@@ -89,3 +115,4 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
