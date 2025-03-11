@@ -303,3 +303,33 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: responds with nothing if comment successfully deleted', () => {
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
+      .then(() => {
+        return db.query(`SELECT * FROM comments WHERE comment_id = 3`)
+        .then(({ rows }) => {
+          expect(rows).toEqual([])
+        })
+      })
+  });
+  test("404: responds with an error message when passed id not present in the comments table", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message when passed id is not a number", () => {
+    return request(app)
+      .delete("/api/comments/notANumber")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+});
