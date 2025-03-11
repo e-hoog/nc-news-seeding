@@ -316,4 +316,12 @@ describe('DELETE /api/comments/:comment_id', () => {
         })
       })
   });
+  test("404: responds with an error message when passed id not present in the comments table", () => {
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
 });

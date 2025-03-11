@@ -22,6 +22,7 @@ exports.insertCommentIntoArticle = async(username, body, article_id) => {
     })
 }
 
-exports.removeCommentById = (id) => {
+exports.removeCommentById = async(id) => {
+    await checkValueExists("comments", "comment_id", id)
     return db.query(`DELETE FROM comments WHERE comment_id = $1`, [id])
 }
