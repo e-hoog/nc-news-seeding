@@ -257,4 +257,49 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(article).toHaveProperty("article_id", 1)
       })
   })
+  test("404: responds with an error message when passed id not present in the articles table", () => {
+    return request(app)
+      .patch("/api/articles/10000")
+      .send({
+        inc_votes: -10
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if id passed is not a number", () => {
+    return request(app)
+      .patch("/api/articles/notANumber")
+      .send({
+        inc_votes: 403
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+  test("400: responds with an error message if passed body contains the correct fields but incorrect values for the fields", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: "nine"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+  test("400: responds with an error message if passed body does not contain the correct fields", () => {
+    return request(app)
+      .patch("/api/articles/4")
+      .send({
+        username: "greggoryt",
+        otherkey: "othervalue"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
 });
