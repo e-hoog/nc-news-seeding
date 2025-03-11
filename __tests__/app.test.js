@@ -132,6 +132,13 @@ describe("GET /api/articles/:article_id/comments", () => {
         })
       })
   })
+  test("200: responds with an empty array when passed id is present in the articles table but has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
+      });
   });
   test("404: responds with an error message when passed id not present in the articles table", () => {
     return request(app)
@@ -149,3 +156,4 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body).toHaveProperty("msg", "Bad Request");
       });
   });
+});

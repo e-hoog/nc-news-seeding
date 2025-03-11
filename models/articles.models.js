@@ -1,4 +1,5 @@
 const db = require("../db/connection")
+const { checkValueExists } = require("../utils.app")
 
 exports.selectArticles = () => {
     return db.query(`SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comment_id) AS comment_count 
@@ -24,7 +25,10 @@ exports.selectArticleById = (id) => {
 
 exports.selectCommentsByArticleId = (id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1`, [id])
-    .then( ({ rows }) => {
+    .then( async ({ rows }) => {
+        if(!rows.length) {
+            await checkValueExists("articles", "article_id", id);
+        }
         return rows
     })
 }

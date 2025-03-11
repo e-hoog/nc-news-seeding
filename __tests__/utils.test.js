@@ -1,9 +1,9 @@
 const {
   convertTimestampToDate,
   createLookupObject,
-  countCommentsById
 } = require("../db/seeds/utils");
-const db = require("../db/connection")
+const db = require("../db/connection");
+const { checkValueExists } = require("../utils.app");
 
 afterAll(() => {
   return db.end()
@@ -127,3 +127,20 @@ describe('createLookupObject', () => {
     expect(result).toEqual({})
   });
 });
+
+describe('checkValueExists', () => {
+  test('resolves if given value exists on the given column of the given table', () => {
+    const tableInput = "articles"
+    const columnInput = "article_id"
+    const valueInput = 2
+    const result = checkValueExists(tableInput, columnInput, valueInput)
+    expect(result).resolves.toBe(undefined)
+  });
+  test('rejects if given value does not exists on the given column of the given table', () => {
+    const tableInput = "articles"
+    const columnInput = "article_id"
+    const valueInput = 100000
+    const result = checkValueExists(tableInput, columnInput, valueInput)
+    expect(result).rejects.toEqual({"status" : 404, "msg" : "Not Found"})
+  });
+})
