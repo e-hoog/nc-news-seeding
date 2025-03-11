@@ -12,6 +12,10 @@ exports.selectCommentsByArticleId = (id) => {
 }
 
 exports.insertCommentIntoArticle = async(username, body, article_id) => {
+    if(typeof username !== "string" || typeof body !== "string") {
+        return Promise.reject({ status: 400, msg: "Bad Request" })
+    }
+    await checkValueExists("users", "username", username)
     return db.query(`INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *`, [username, body, article_id])
     .then(({ rows }) => {
         return rows[0]

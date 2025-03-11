@@ -200,4 +200,41 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body).toHaveProperty("msg", "Bad Request");
       });
   });
+  test("404: responds with an error message if passed a username that does not exist", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({
+        username : "notAUsername",
+        body: "wish I could comment here..."
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if passed body contains the correct fields but incorrect values for the fields", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username : 4,
+        body: "this could use more numbers"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+  test("400: responds with an error message if passed body does not contain the correct fields", () => {
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send({
+        body: "this could use more numbers",
+        otherkey: "othervalue"
+
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
 });
