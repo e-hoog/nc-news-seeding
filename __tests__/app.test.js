@@ -159,7 +159,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test('201: Responds with an object containing the posted comment data if given a valid article id', () => {
+  test('201: Responds with an object containing the posted comment data if given a valid article id and body', () => {
     return request(app)
       .post('/api/articles/3/comments')
       .send({
@@ -237,4 +237,24 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body).toHaveProperty("msg", "Bad Request");
       });
   });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test('200: Responds with an object containing the updated article data if given a valid article id and body', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: -4
+      })
+      .expect(200)
+      .then(({ body: { article } }) => {
+          expect(article).toHaveProperty("title")
+          expect(article).toHaveProperty("topic")
+          expect(article).toHaveProperty("author")
+          expect(article).toHaveProperty("body")
+          expect(article).toHaveProperty("created_at")
+          expect(article).toHaveProperty("votes", 96)
+          expect(article).toHaveProperty("article_id", 1)
+      })
+  })
 });
