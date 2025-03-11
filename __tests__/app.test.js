@@ -157,3 +157,23 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test('201: Responds with an object containing the posted comment data if given a valid article id', () => {
+    return request(app)
+      .post('/api/articles/3/comments')
+      .send({
+        username : "butter_bridge",
+        body : "this one really speaks to me as a person"
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+          expect(comment).toHaveProperty("comment_id")
+          expect(comment).toHaveProperty("votes")
+          expect(comment).toHaveProperty("created_at")
+          expect(comment).toHaveProperty("author")
+          expect(comment).toHaveProperty("body")
+          expect(comment).toHaveProperty("article_id", 3)
+      })
+  })
+});
