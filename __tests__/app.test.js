@@ -23,7 +23,6 @@ describe("ALL /notARoute", () => {
       .get("/api/treasure")
       .expect(404)
       .then(({ body }) => {
-        //console.log(body);
         expect(body.msg).toBe("Not Found");
       });
   });
@@ -116,3 +115,37 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test('200: Responds with an object containing correct data on the comments with the given article_id', () => {
+    return request(app)
+      .get('/api/articles/3/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBeGreaterThan(0)
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id")
+          expect(comment).toHaveProperty("votes")
+          expect(comment).toHaveProperty("created_at")
+          expect(comment).toHaveProperty("author")
+          expect(comment).toHaveProperty("body")
+          expect(comment).toHaveProperty("article_id", 3)
+        })
+      })
+  })
+  });
+  test("404: responds with an error message when passed id not present in the articles table", () => {
+    return request(app)
+      .get("/api/articles/10000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if not passed a number", () => {
+    return request(app)
+      .get("/api/articles/notANumber/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
