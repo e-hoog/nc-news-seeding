@@ -303,3 +303,17 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: responds with nothing if comment successfully deleted', () => {
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
+      .then(() => {
+        return db.query(`SELECT * FROM comments WHERE comment_id = 3`)
+        .then(({ rows }) => {
+          expect(rows).toEqual([])
+        })
+      })
+  });
+});
