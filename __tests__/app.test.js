@@ -157,3 +157,84 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test('201: Responds with an object containing the posted comment data if given a valid article id', () => {
+    return request(app)
+      .post('/api/articles/3/comments')
+      .send({
+        username : "butter_bridge",
+        body : "this one really speaks to me as a person"
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+          expect(comment).toHaveProperty("comment_id")
+          expect(comment).toHaveProperty("votes")
+          expect(comment).toHaveProperty("created_at")
+          expect(comment).toHaveProperty("author")
+          expect(comment).toHaveProperty("body")
+          expect(comment).toHaveProperty("article_id", 3)
+      })
+  })
+  test("404: responds with an error message when passed id not present in the articles table", () => {
+    return request(app)
+      .post("/api/articles/10000/comments")
+      .send({
+        username : "icellusedkars",
+        body : "great stuff"
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if id passed is not passed a number", () => {
+    return request(app)
+      .post("/api/articles/notANumber/comments")
+      .send({
+        username : "rogersop",
+        body : "I love news!"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+  test("404: responds with an error message if passed a username that does not exist", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({
+        username : "notAUsername",
+        body: "wish I could comment here..."
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if passed body contains the correct fields but incorrect values for the fields", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username : 4,
+        body: "this could use more numbers"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+  test("400: responds with an error message if passed body does not contain the correct fields", () => {
+    return request(app)
+      .post("/api/articles/4/comments")
+      .send({
+        body: "this could use more numbers",
+        otherkey: "othervalue"
+
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
+});
