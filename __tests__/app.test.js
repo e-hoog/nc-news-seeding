@@ -188,7 +188,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body).toHaveProperty("msg", "Not Found");
       });
   });
-  test("400: responds with an error message if not passed a number", () => {
+  test("400: responds with an error message if id passed is not passed a number", () => {
     return request(app)
       .post("/api/articles/notANumber/comments")
       .send({
