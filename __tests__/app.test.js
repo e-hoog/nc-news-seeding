@@ -176,4 +176,28 @@ describe("POST /api/articles/:article_id/comments", () => {
           expect(comment).toHaveProperty("article_id", 3)
       })
   })
+  test("404: responds with an error message when passed id not present in the articles table", () => {
+    return request(app)
+      .post("/api/articles/10000/comments")
+      .send({
+        username : "icellusedkars",
+        body : "great stuff"
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Not Found");
+      });
+  });
+  test("400: responds with an error message if not passed a number", () => {
+    return request(app)
+      .post("/api/articles/notANumber/comments")
+      .send({
+        username : "rogersop",
+        body : "I love news!"
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
 });
