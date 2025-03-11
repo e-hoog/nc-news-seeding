@@ -324,4 +324,12 @@ describe('DELETE /api/comments/:comment_id', () => {
         expect(body).toHaveProperty("msg", "Not Found");
       });
   });
+  test("400: responds with an error message when passed id is not a number", () => {
+    return request(app)
+      .delete("/api/comments/notANumber")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("msg", "Bad Request");
+      });
+  });
 });
